@@ -71,7 +71,7 @@ export const injectSecretValueMapToEnvironment = (
     // If secretName contains non-posix characters, it can't be read by the shell
     // Get POSIX compliant name secondary env name that can be read by the shell
     const secretNamePOSIX = getPOSIXString(secretName)
-    if (secretName !== secretNamePOSIX && shouldSuppressPOSIXWarning) {
+    if (secretName !== secretNamePOSIX && !shouldSuppressPOSIXWarning) {
       core.warning('One of the secrets has a name that is not POSIX compliant and hence cannot directly \
 be used/injected as an environment variable name. Therefore, it will be transformed into a POSIX compliant \
 environment variable name. Enable GitHub Actions Debug Logging \
