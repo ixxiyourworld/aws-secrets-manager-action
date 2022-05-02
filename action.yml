@@ -16,7 +16,15 @@ inputs:
   add-to-steps-env:
     description: 'If true, the secret values will be automatically added to the env property of each following step.'
     required: false
-    default: 'false'
+    default: 'true'
+  add-to-step-output:
+    description: 'If true, the secret values will be automatically added to the step output and available for each following step.'
+    required: false
+    default: 'true'
+  mask-secrets:
+    description: 'If true, the secret values will be automatically masked within the log showing "***".'
+    required: false
+    default: 'true'
 runs:
   using: 'node12'
   main: 'dist/index.js'

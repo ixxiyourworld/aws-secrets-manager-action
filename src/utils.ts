@@ -63,11 +63,15 @@ export const getPOSIXString = (data: string): string => {
 export const injectSecretValueMapToEnvironment = (
   secretValueMap: Record<string, any>,
   shouldSuppressPOSIXWarning: boolean,
-  shouldAddToStepsENV: boolean
+  shouldAddToStepsENV: boolean,
+  shouldAddToStepOutput: boolean,
+  maskSecrets: boolean
 ): void => {
   for (const secretName in secretValueMap) {
     const secretValue: string = secretValueMap[secretName]
-    core.setSecret(secretValue)
+    if (maskSecrets) {
+      core.setSecret(secretValue)
+    }
     // If secretName contains non-posix characters, it can't be read by the shell
     // Get POSIX compliant name secondary env name that can be read by the shell
     const secretNamePOSIX = getPOSIXString(secretName)
@@ -80,9 +84,14 @@ see the transformed environment variable name.\nPOSIX compliance: environment va
 upper case letters, digits and underscores. It cannot begin with a digit.')
       core.debug(`Secret name '${secretName}' is not POSIX compliant. It will be transformed to '${secretNamePOSIX}'.`)
     }
-    core.debug(`Injecting environment variable '${secretNamePOSIX}'.`)
     if (shouldAddToStepsENV) {
+      core.debug(`Injecting environment variable '${secretNamePOSIX}'.`)
       core.exportVariable(secretNamePOSIX, secretValue)
+    }
+
+    if (shouldAddToStepOutput) {
+      core.debug(`Adding variable '${secretNamePOSIX}' to the step output.`)
+      core.setOutput(secretNamePOSIX, secretValue)
     }
   }
 }

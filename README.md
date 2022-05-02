@@ -34,6 +34,8 @@ steps:
     parse-json: true
     suppress-posix-warning: true
     add-to-steps-env: false
+    add-to-step-output: true
+    mask-secrets: true
 
 - name: Check if env variable is set after fetching secrets
   run: if [ -z ${MY_SECRET_1+x} ]; then echo "MY_SECRET_1 is unset"; else echo "MY_SECRET_1 is set to '$MY_SECRET_1'"; fi
@@ -73,6 +75,13 @@ steps:
 - `add-to-steps-env`
   - If `add-to-steps-env: true`, the secret values will be automatically added to the env property of each following
     step.
+
+- `add-to-step-output`
+  - If `add-to-step-output: true`, the secret values will be automatically added to the step output and
+    available for each following step.
+
+- `mask-secrets`
+  - If `mask-secrets: true`, the secret values will be automatically masked within the log showing "***".
 
 #### Note:
 - `${{ secrets.AWS_ACCESS_KEY_ID }}`, `${{ secrets.AWS_SECRET_ACCESS_KEY }}` and `${{ secrets.AWS_REGION }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets in your GitHub repository before using them in this GitHub Action.

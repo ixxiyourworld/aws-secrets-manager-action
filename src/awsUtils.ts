@@ -135,13 +135,21 @@ const fetchAndInject = (
   secretNamesToFetch: Array<string>,
   shouldParseJSON: boolean,
   shouldSuppressPOSIXWarning: boolean,
-  shouldAddToStepsENV: boolean
+  shouldAddToStepsENV: boolean,
+  shouldAddToStepOutput: boolean,
+  maskSecrets: boolean
 ): void => {
   core.debug(`Will fetch ${secretNamesToFetch.length} secrets: ${secretNamesToFetch}`)
   secretNamesToFetch.forEach((secretName) => {
     getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
       .then(map => {
-        injectSecretValueMapToEnvironment(map, shouldSuppressPOSIXWarning, shouldAddToStepsENV)
+        injectSecretValueMapToEnvironment(
+          map,
+          shouldSuppressPOSIXWarning,
+          shouldAddToStepsENV,
+          shouldAddToStepOutput,
+          maskSecrets
+        )
       })
       .catch(err => {
         core.setFailed(`Failed to fetch '${secretName}'. Error: ${err}.`)

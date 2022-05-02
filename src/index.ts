@@ -15,6 +15,10 @@ const shouldSuppressPOSIXWarning = core.getBooleanInput(Inputs.SUPPRESS_POSIX_WA
 
 const shouldAddToStepsENV = core.getBooleanInput(Inputs.ADD_TO_STEPS_ENV)
 
+const shouldAddToStepOutput = core.getBooleanInput(Inputs.ADD_TO_STEP_OUTPUT)
+
+const maskSecrets = core.getBooleanInput(Inputs.MASK_SECRETS)
+
 const AWSConfig = {}
 
 const secretsManagerClient = getSecretsManagerClient(AWSConfig)
@@ -27,7 +31,9 @@ if (hasWildcard) {
         secretNamesToFetch,
         shouldParseJSON,
         shouldSuppressPOSIXWarning,
-        shouldAddToStepsENV
+        shouldAddToStepsENV,
+        shouldAddToStepOutput,
+        maskSecrets
       )
     })
     .catch(err => {
@@ -38,6 +44,8 @@ if (hasWildcard) {
     inputSecretNames,
     shouldParseJSON,
     shouldSuppressPOSIXWarning,
-    shouldAddToStepsENV
+    shouldAddToStepsENV,
+    shouldAddToStepOutput,
+    maskSecrets
   )
 }
