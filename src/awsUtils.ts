@@ -130,13 +130,18 @@ const getSecretNamesToFetch =
     })
   }
 
-const fetchAndInject = (secretsManagerClient: SecretsManager,
-  secretNamesToFetch: Array<string>, shouldParseJSON: boolean): void => {
+const fetchAndInject = (
+  secretsManagerClient: SecretsManager,
+  secretNamesToFetch: Array<string>,
+  shouldParseJSON: boolean,
+  shouldSuppressPOSIXWarning: boolean,
+  shouldAddToStepsENV: boolean
+): void => {
   core.debug(`Will fetch ${secretNamesToFetch.length} secrets: ${secretNamesToFetch}`)
   secretNamesToFetch.forEach((secretName) => {
     getSecretValueMap(secretsManagerClient, secretName, shouldParseJSON)
       .then(map => {
-        injectSecretValueMapToEnvironment(map)
+        injectSecretValueMapToEnvironment(map, shouldSuppressPOSIXWarning, shouldAddToStepsENV)
       })
       .catch(err => {
         core.setFailed(`Failed to fetch '${secretName}'. Error: ${err}.`)

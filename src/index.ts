@@ -11,6 +11,10 @@ const hasWildcard: boolean = inputSecretNames.some(secretName => secretName.incl
 
 const shouldParseJSON = core.getBooleanInput(Inputs.PARSE_JSON)
 
+const shouldSuppressPOSIXWarning = core.getBooleanInput(Inputs.SUPPRESS_POSIX_WARNING)
+
+const shouldAddToStepsENV = core.getBooleanInput(Inputs.ADD_TO_STEPS_ENV)
+
 const AWSConfig = {}
 
 const secretsManagerClient = getSecretsManagerClient(AWSConfig)
@@ -19,11 +23,21 @@ if (hasWildcard) {
   core.debug('Found wildcard secret names')
   getSecretNamesToFetch(secretsManagerClient, inputSecretNames)
     .then(secretNamesToFetch => {
-      fetchAndInject(secretsManagerClient, secretNamesToFetch, shouldParseJSON)
+      fetchAndInject(secretsManagerClient,
+        secretNamesToFetch,
+        shouldParseJSON,
+        shouldSuppressPOSIXWarning,
+        shouldAddToStepsENV
+      )
     })
     .catch(err => {
       core.setFailed(`Action failed with error: ${err}`)
     })
 } else {
-  fetchAndInject(secretsManagerClient, inputSecretNames, shouldParseJSON)
+  fetchAndInject(secretsManagerClient,
+    inputSecretNames,
+    shouldParseJSON,
+    shouldSuppressPOSIXWarning,
+    shouldAddToStepsENV
+  )
 }

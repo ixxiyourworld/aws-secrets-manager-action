@@ -9,8 +9,16 @@ inputs:
     description: 'If true and secret values are stringified JSON objects, they will be parsed and flattened. Its key value pairs will become individual secrets'
     required: false
     default: 'false'
+  suppress-posix-warning:
+    description: 'If false, names (keys) of secrets not matching POSIX validation, are notified in the log as warnings.'
+    required: false
+    default: 'true'
+  add-to-steps-env:
+    description: 'If true, the secret values will be automatically added to the env property of each following step.'
+    required: false
+    default: 'false'
 runs:
-  using: 'node12'
+  using: 'node14'
   main: 'dist/index.js'
 branding:
   icon: lock

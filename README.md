@@ -32,6 +32,8 @@ steps:
       my_secret_1
       app1/dev/*
     parse-json: true
+    suppress-posix-warning: true
+    add-to-steps-env: false
 
 - name: Check if env variable is set after fetching secrets
   run: if [ -z ${MY_SECRET_1+x} ]; then echo "MY_SECRET_1 is unset"; else echo "MY_SECRET_1 is set to '$MY_SECRET_1'"; fi
@@ -55,7 +57,7 @@ steps:
       ```
 - `parse-json`
   - If `parse-json: true` and secret value is a **valid** stringified JSON object, it will be parsed and flattened. Each of the key value pairs in the flattened JSON object will become individual secrets. The original secret name will be used as a prefix.
-  - Examples: 
+  - Examples:
 
 | `parse-json` | AWS Secrets Manager Secret<br>(`name` = `value`) | Injected Environment Variable<br>(`name` = `value`) | Explanation                                                                             |
 |--------------|--------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------|
@@ -63,6 +65,14 @@ steps:
 | `true`       | `1/dev/foo` = `{ "bar" = "baz" }`                | `_1_DEV_FOO` = `{ "bar" = "baz" }`                  | Values that cannot be parsed into a JSON will NOT be parsed                             |
 | `true`       | `foo` = `{ "bar": "baz" }`<br>`ham` = `eggs`     | `FOO_BAR` = `baz` AND<br>`ham` = `eggs`             | If multiple secrets, values that can be parsed into a JSON will be parsed and flattened |
 | `false`      | `dev_foo` = `{ "bar": "baz" }`                   | `DEV_FOO` = `{ "bar": "baz" }`                      | Not parsed                                                                              |
+
+- ` suppress-posix-warning`
+  - If `suppress-posix-warning: false`, names (keys) of secrets not matching POSIX validation, are notified in the
+    log as warnings.
+
+- `add-to-steps-env`
+  - If `add-to-steps-env: true`, the secret values will be automatically added to the env property of each following
+    step.
 
 #### Note:
 - `${{ secrets.AWS_ACCESS_KEY_ID }}`, `${{ secrets.AWS_SECRET_ACCESS_KEY }}` and `${{ secrets.AWS_REGION }}` refers to [GitHub Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). Create the required secrets in your GitHub repository before using them in this GitHub Action.
